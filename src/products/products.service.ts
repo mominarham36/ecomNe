@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
-import * as csv from 'csvtojson';
 const excelToJson = require('convert-excel-to-json');
 
 @Injectable()
@@ -28,9 +27,10 @@ export class ProductsService {
   }
 
   async findAll() {
-    const response = { message: 'Invalid request', responseCode: 400 };
+    const response = { message: 'Invalid request', responseCode: 400,data:null };
     try {
       const product = await this.repository.find()
+      response.data = product;
       response.message = 'deleted succefully';
       response.responseCode = 200;
     } catch (error) {

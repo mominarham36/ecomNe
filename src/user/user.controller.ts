@@ -11,10 +11,10 @@ export class UserController {
     return this.service.create(body);
   }
 
-  // @Public()
+
   @Get()
   findAll(@Req() req) {
-    return this.service.findAll(req.user);
+    return this.service.findAll();
   }
 
   @Get(':id')

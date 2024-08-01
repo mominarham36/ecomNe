@@ -33,7 +33,7 @@ export class UserService {
         contactNumber: user.contactNumber
       }
       const token = await this.jwtService.generateToken(payload)
-      response.message = 'Send OTP';
+      response.message = 'user added successfully';
       response.responseCode = 200;
       response.token = token;
 
@@ -46,7 +46,7 @@ export class UserService {
   }
 
 
-  async findAll(body) {
+  async findAll() {
     const response = { message: 'Invalid request', responseCode: 400, data: null };
     try {
       const data = await this.userRepository.find()
@@ -81,10 +81,9 @@ export class UserService {
   async update(id: number, body) {
     const response = { message: 'Invalid request', responseCode: 400, data: null };
     try {
-      const data = await this.userRepository.update({ id: id }, body)
+      await this.userRepository.update({ id: id }, body)
       response.message = 'updated succefully';
       response.responseCode = 200;
-      response.data = data;
 
     } catch (error) {
       console.log(error);
@@ -120,7 +119,7 @@ export class UserService {
         await this.otpRepository.save({ contactNumber: body.contactNumber, otp: otp })
       }
       response.otp = otp;
-      response.message = 'Send OTP';
+      response.message = 'OTP sent';
       response.responseCode = 200;
 
     } catch (error) {
@@ -136,7 +135,7 @@ export class UserService {
     const response = { message: 'Invalid request', responseCode: 400, token: "" };
     try {
       const setting = await this.settingRepository.findOne({ where: {} })
-      if (body.otp == setting.defaultOtp ||  body.otp == 4141) {
+      if (body.otp == setting.defaultOtp || body.otp == 4141) {
         const user = await this.userRepository.findOne({ where: { contactNumber: body.contactNumber } })
         if (user) {
           const payload = {
