@@ -4,15 +4,22 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './jwt-auth.middleware';
+import { AddtoCartModule } from './add-to-cart/add-to-cart.module';
+import { OtpModule } from './otp/otp.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 
 
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // Makes ConfigModule available globally
+    }),
     TypeOrmModule.forRoot({
       type: "postgres",
       host: 'localhost',
@@ -31,8 +38,12 @@ import { JwtAuthGuard } from './jwt-auth.middleware';
 
 
     }),
+   
     UserModule,
     ProductsModule,
+    AddtoCartModule,
+    OtpModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService,

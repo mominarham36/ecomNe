@@ -1,11 +1,16 @@
+// jwt-auth.middleware.ts (or jwt-auth.guard.ts if following naming conventions)
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { Public } from './public.decorator';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService, private readonly reflector: Reflector) {}
+  constructor(
+    private readonly jwtService: JwtService, 
+    private readonly reflector: Reflector,
+    // private readonly authService: AuthService,
+  ) {}
 
   canActivate(context: ExecutionContext): boolean {
     const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
@@ -14,7 +19,6 @@ export class JwtAuthGuard implements CanActivate {
     ]);
 
     if (isPublic) {
-      // If the route is marked as public, bypass the guard
       return true;
     }
 
@@ -25,13 +29,13 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException('Authorization header is missing');
     }
 
-    const [, token] = authHeader.split(' ');
+    const token = authHeader.split(' ')[1];
     if (!token) {
       throw new UnauthorizedException('Token is missing');
     }
 
     try {
-      const decoded = this.jwtService.verify(token);
+      const decoded = this.jwtService.verify(token,{secret:'qwertyuiop'});
       request.user = decoded;
       return true;
     } catch (error) {

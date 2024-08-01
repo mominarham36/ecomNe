@@ -1,36 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from 'src/public.decorator';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly service: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  create(@Body() body) {
+    return this.service.create(body);
   }
 
-  @Public()
+  // @Public()
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Req() req) {
+    return this.service.findAll(req.user);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.service.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  update(@Param('id') id: string, @Body() body) {
+    return this.service.update(+id, body);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+    return this.service.remove(+id);
+  }
+
+
+  @Public()
+  @Post('send-otp')
+  async sendOTP(@Req() req, @Res() res) {
+      try {
+          const data = await this.service.sendOTP(req.body);
+          return res.status(HttpStatus.OK).json(data);
+      } catch (error) {
+          console.log(error);
+      }
+  }
+
+  @Public()
+  @Post('verify-otp')
+  async verifyOTP(@Req() req, @Res() res) {
+      try {
+          const data = await this.service.verifyOTP(req.body);
+          return res.status(HttpStatus.OK).json(data);
+      } catch (error) {
+          console.log(error);
+      }
   }
 }
