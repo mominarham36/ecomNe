@@ -1,15 +1,15 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm"
 
-@Entity('otp')
-export class Otp {
+@Entity('setting')
+export class Setting {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ nullable: true })
-    contactNumber: string
+    maxQuantity: number
 
     @Column({ nullable: true })
-    otp: number;
+    defaultOtp: number;
 
     @CreateDateColumn()
     createdTimestamp: string;

@@ -1,15 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, Res, HttpStatus } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Public } from 'src/public.decorator';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(private readonly productsService: ProductsService) { }
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+  create(@Body() body) {
+    return this.productsService.create(body);
   }
 
   @Get()
@@ -17,18 +17,25 @@ export class ProductsController {
     return this.productsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+  @Get('get-product')
+  getProducct(@Req() req) {
+    return this.productsService.getProducct(req.query);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+
+
+  @Public()
+  @Post('bulkuploadxl')
+  @UseInterceptors(
+    FileInterceptor('filedata', {}))
+  async uploadFile(@Req() req, @Res() res, @UploadedFile() filedata: Express.Multer.File) {
+    try {
+      const result = await this.productsService.bulkuploadaXlData(req, filedata);
+      return res.status(HttpStatus.OK).json(result);
+    } catch (err) {
+      console.log(err)
+    }
+
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
-  }
 }

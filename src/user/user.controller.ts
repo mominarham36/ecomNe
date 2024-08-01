@@ -4,7 +4,7 @@ import { Public } from 'src/public.decorator';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly service: UserService) {}
+  constructor(private readonly service: UserService) { }
 
   @Post()
   create(@Body() body) {
@@ -36,22 +36,16 @@ export class UserController {
   @Public()
   @Post('send-otp')
   async sendOTP(@Req() req, @Res() res) {
-      try {
-          const data = await this.service.sendOTP(req.body);
-          return res.status(HttpStatus.OK).json(data);
-      } catch (error) {
-          console.log(error);
-      }
+    const data = await this.service.sendOTP(req.body);
+    return res.status(HttpStatus.OK).json(data);
+
   }
 
   @Public()
   @Post('verify-otp')
   async verifyOTP(@Req() req, @Res() res) {
-      try {
-          const data = await this.service.verifyOTP(req.body);
-          return res.status(HttpStatus.OK).json(data);
-      } catch (error) {
-          console.log(error);
-      }
+    const data = await this.service.verifyOTP(req.body);
+    return res.status(HttpStatus.OK).json(data);
+
   }
 }

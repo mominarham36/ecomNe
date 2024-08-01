@@ -11,6 +11,7 @@ import { AddtoCartModule } from './add-to-cart/add-to-cart.module';
 import { OtpModule } from './otp/otp.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { SettingModule } from './setting/setting.module';
 
 
 
@@ -44,6 +45,7 @@ import { AuthModule } from './auth/auth.module';
     AddtoCartModule,
     OtpModule,
     AuthModule,
+    SettingModule
   ],
   controllers: [AppController],
   providers: [AppService,

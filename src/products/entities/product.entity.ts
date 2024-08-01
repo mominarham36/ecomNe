@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity('products')
 export class Product {
@@ -13,4 +13,7 @@ export class Product {
 
     @Column({ nullable: true })
     amount: number;
+
+    @CreateDateColumn()
+    createdTimestamp: string;
 }
