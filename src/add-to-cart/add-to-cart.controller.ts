@@ -15,4 +15,8 @@ export class AddtoCartController {
     return this.service.getUserCart(req.query);
   }
 
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.service.remove(+id);
+  }
 }

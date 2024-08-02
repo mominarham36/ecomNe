@@ -51,6 +51,7 @@ export class ProductsService {
       SELECT id, name, image, amount, "createdTimestamp"
 	      FROM products
         ${nameQuerry}
+         order by "createdTimestamp" desc
         `
       )
       response.data = product

@@ -20,14 +20,13 @@ export class AddtoCartService {
   async create(body, decodedUser) {
     const response = { message: 'Invalid request', responseCode: 400, token: null };
     try {
-      // const userId = decodedUser.id
       const setting = await this.settingRepository.findOne({ where: {} })
-      const userId = 1
+      const userId = decodedUser.is
       if (body.quantity <= setting.maxQuantity) {
         if (body.quantity > 0) {
           const product = await this.productRepository.findOne({ where: { id: body.productId } })
           const totalAmount = product.amount * body.quantity
-          const check = await this.repository.findOne({ where: { productId: body.product, userId: 1, status: 0 } })
+          const check = await this.repository.findOne({ where: { productId: body.product, userId: userId, status: 0 } })
           if (check) {
             await this.repository.update({ id: check.id }, { quantity: body.quantity, totalAmount: totalAmount })
             response.message = 'successfully upated cart';
@@ -78,6 +77,20 @@ export class AddtoCartService {
       response.responseCode = 400;
     }
     return response;
+  }
+
+  async remove(id: number) {
+    const response = { message: 'Invalid request', responseCode: 400 };
+    try {
+      await this.repository.delete({ id: id })
+      response.message = 'deleted succefully';
+      response.responseCode = 200;
+    } catch (error) {
+      console.log(error);
+      response.message = 'Failed to save';
+      response.responseCode = 400;
+    }
+    return response;;
   }
 
 }
